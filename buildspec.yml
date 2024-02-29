@@ -13,3 +13,6 @@ phases:
 artifacts:
   files:
     - target/auth-server.jar
+    - scripts/*.sh
+    - appspec.yml
+  discard-paths: yes
