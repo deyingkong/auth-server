@@ -1,0 +1,13 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - echo Build started on `date`
+      - mvn package -DskipTests=true
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - mv target/auth-server.jar auth-server.jar
+artifacts:
+  files:
+    - auth-server.jar
