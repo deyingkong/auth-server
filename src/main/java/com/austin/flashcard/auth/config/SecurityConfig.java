@@ -1,15 +1,18 @@
 package com.austin.flashcard.auth.config;
 
+import com.austin.flashcard.auth.repository.UserRepository;
+import com.austin.flashcard.auth.service.MyUserDetailService;
+import com.austin.flashcard.auth.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 /**
  * @Description:
@@ -20,25 +23,44 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+        private final static String SALT = "haha";
+
+        @Autowired
+        private UserRepository userRepository;
+
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http.authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
-                    .httpBasic(Customizer.withDefaults())
-                    .formLogin(v -> v.defaultSuccessUrl("/home"));
+            http.authorizeHttpRequests(authorize ->
+                            authorize.requestMatchers("/test").anonymous()
+                                    .requestMatchers("/signIn").anonymous()
+                                    .requestMatchers("/signUp").anonymous()
+                                    .requestMatchers("/signUpProcess").anonymous()
+                                    .requestMatchers("/css/**").permitAll()
+                                    .requestMatchers("/images/**").permitAll()
+                                    .requestMatchers("/webjars/**").permitAll()
+                            .anyRequest().authenticated()
+                    )
+                    .formLogin(v ->
+                        v.defaultSuccessUrl("/home")
+                        .loginProcessingUrl("/login")
+                                .successHandler(new SimpleUrlAuthenticationSuccessHandler("/home"))
+                        .loginPage("/signIn")
+                                .usernameParameter("email")
+                                .passwordParameter("password")
+                    ).logout(v -> v.logoutUrl("/logout")
+                            .logoutSuccessUrl("/signIn")
+                            .permitAll());
 
             return http.build();
         }
 
         @Bean
         public UserDetailsService userDetailsService() {
-            UserDetails userDetails = User.builder()
-                    .username("admin")
-                    .password("{bcrypt}$2a$10$8L6Krvh0jNlcnvJgQfgFGeWKtufKjW6PfuM2LsHTgYCLh9teYTwpu")
-                    .roles("ADMIN")
-                    .build();
-
-            return new InMemoryUserDetailsManager(userDetails);
+            return new MyUserDetailService(userRepository);
         }
 
-
+        @Bean
+        public PasswordEncoder passwordEncoder(){
+            return new BCryptPasswordEncoder();
+        }
 }

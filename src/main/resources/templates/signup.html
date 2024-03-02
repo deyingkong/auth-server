@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Austin Kong">
+    <meta name="generator" content="Hugo 0.104.2">
+    <title>Signin</title>
+
+    <meta name="theme-color" content="#712cf9">
+    <script src="/webjars/jquery/3.7.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+
+    <!-- Custom styles for this template -->
+    <link href="/css/signin.css" rel="stylesheet">
+</head>
+<body class="text-center">
+
+<main class="form-signin w-100 m-auto">
+    <form action="/signUpProcess" method="post">
+        <a href="/"><img class="mb-4" src="/images/logo.png" alt="" width="150" height="150"></a>
+        <h1 class="h3 mb-3 fw-normal">Sign Up</h1>
+
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+        <div class="form-floating mb-2">
+            <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+            <label for="username">Username</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com">
+            <label for="email">Email address</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+            <label for="password">Password</label>
+        </div>
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign Up</button>
+        <p class="mt-5 mb-3 text-muted">&copy; 2023–2024</p>
+    </form>
+</main>
+
+</body>
+</html>
