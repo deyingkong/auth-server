@@ -1,5 +1,6 @@
 package com.austin.flashcard.auth.controller;
 
+import com.austin.flashcard.auth.constant.Common;
 import com.austin.flashcard.auth.entity.User;
 import com.austin.flashcard.auth.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +37,6 @@ public class AccountController {
     private HttpServletRequest httpRequest;
 
 
-
     @GetMapping("/signIn")
     public String signIn(Model model){
 
@@ -45,12 +45,13 @@ public class AccountController {
         if(!StringUtils.isEmpty(errorMsg)){
             model.addAttribute("error", errorMsg);
         }
+        model.addAttribute(Common.PAGE_TITLE_KEY, "Sign-in");
         return "login";
     }
 
     @GetMapping("/signUp")
     public String openSignUpPage(Model model){
-
+        model.addAttribute(Common.PAGE_TITLE_KEY, "Sign-up");
         return "signup";
     }
 
@@ -78,6 +79,7 @@ public class AccountController {
         if(userOptional.isPresent()) {
             model.addAttribute("user", userOptional.get());
         }
+        model.addAttribute(Common.PAGE_TITLE_KEY, "Profile");
         return "profile";
     }
 

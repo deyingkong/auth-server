@@ -1,5 +1,6 @@
 package com.austin.flashcard.auth.controller;
 
+import com.austin.flashcard.auth.constant.Common;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ public class HomeController {
 
     @RequestMapping("/home")
     public String home(Model model){
+        model.addAttribute(Common.PAGE_TITLE_KEY, "Homepage");
         return "home";
     }
 }
