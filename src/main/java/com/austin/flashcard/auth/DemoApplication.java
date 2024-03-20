@@ -27,7 +27,7 @@ public class DemoApplication {
 		return result;
 	}
 
-/*	@Bean
+	@Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		return args -> {
 
@@ -36,10 +36,13 @@ public class DemoApplication {
 			String[] beanNames = ctx.getBeanDefinitionNames();
 			Arrays.sort(beanNames);
 			for (String beanName : beanNames) {
-				log.info(beanName);
+			var object = ctx.getBean(beanName);
+				if(object.getClass().toString().contains("org.springframework.security")
+				&& !object.getClass().toString().contains("annotation"))
+					log.info("bean name:{}, class:{}", beanName, object.getClass());
 			}
 		};
-	}*/
+	}
 
 
 	public static void main(String[] args) {

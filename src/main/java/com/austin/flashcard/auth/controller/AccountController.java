@@ -10,8 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,11 +69,11 @@ public class AccountController {
     }
 
     @GetMapping("/profile")
-    public String profilePage(Model model){
-        org.springframework.security.core.userdetails.User securityUser = userService.retrieveUserFromContext();
-        log.info("user {} is viewing his/her profile", securityUser.getUsername());
+    public String profilePage(Authentication authentication, Model model){
+        var email = UserService.retrieveEmailFromAuthentication(authentication);
+        log.info("user {} is viewing his/her profile", email);
 
-        Optional<User> userOptional = userService.findUserByEmail(securityUser.getUsername());
+        Optional<User> userOptional = userService.findUserByEmail(email);
         if(userOptional.isPresent()) {
             model.addAttribute("user", userOptional.get());
         }

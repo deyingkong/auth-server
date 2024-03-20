@@ -4,10 +4,10 @@ import com.austin.flashcard.auth.entity.User;
 import com.austin.flashcard.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,17 +48,27 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public org.springframework.security.core.userdetails.User retrieveUserFromContext(){
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-
-        org.springframework.security.core.userdetails.User securityUser = (org.springframework.security.core.userdetails.User )
-                authentication.getPrincipal();
-        return securityUser;
+    public static String retrieveEmailFromAuthentication(Authentication authentication){
+        //SecurityContext context = SecurityContextHolder.getContext();
+        //Authentication authentication = context.getAuthentication();
+        if(authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
+            org.springframework.security.core.userdetails.User securityUser = (org.springframework.security.core.userdetails.User)
+                    authentication.getPrincipal();
+            return securityUser.getUsername();
+        }
+        if(authentication instanceof OAuth2AuthenticationToken){
+            OAuth2User oAuth2User = (DefaultOidcUser)authentication.getPrincipal();
+            return oAuth2User.getAttribute("email");
+        }
+        return null;
     }
 
-    public User convertSecurityUser(UserDetails userDetails){
-        return User.builder().email(userDetails.getUsername()).build();
+    public static String retrieveUsernameFromAuthentication(Authentication authentication){
+        if(authentication instanceof OAuth2AuthenticationToken){
+            OAuth2User oAuth2User = (DefaultOidcUser)authentication.getPrincipal();
+            return oAuth2User.getAttribute("name");
+        }
+        return null;
     }
 
 }
