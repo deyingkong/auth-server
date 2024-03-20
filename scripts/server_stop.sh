@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo pkill -xf 'java -jar auth-server.jar'
+for pid in $(ps -ef | awk '/java/ && /auth-server.jar/ {print $2}'); do sudo kill -9 $pid; done
