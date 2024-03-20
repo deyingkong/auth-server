@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @Description:
@@ -16,12 +17,13 @@ import java.io.IOException;
 @Slf4j
 public class PrintRequestFilter extends OncePerRequestFilter {
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var session = request.getSession(false);
-        log.info("received a request:{}, session:{}, isNew:{}", request.getRequestURL(),
-                session.getId(), session.isNew());
+        log.info("received a request:{}, session:{}, isNew:{}", request.getRequestURL());
+        if(!Objects.isNull(session)){
+            log.info("session ID:{}, session is new:{}", session.getId(), session.isNew());
+        }
         filterChain.doFilter(request, response);
     }
 
