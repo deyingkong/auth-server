@@ -20,7 +20,7 @@ public class PrintRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var session = request.getSession(false);
-        log.info("received a request:{}, session:{}, isNew:{}", request.getRequestURL());
+        log.info("received a request:{}", request.getRequestURL());
         if(!Objects.isNull(session)){
             log.info("session ID:{}, session is new:{}", session.getId(), session.isNew());
         }
