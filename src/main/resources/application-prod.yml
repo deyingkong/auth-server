@@ -1,3 +1,5 @@
+root:
+    url: ${AUTH_SERVER_URL}
 logging:
     config: classpath:logback-prod.xml
 spring:
