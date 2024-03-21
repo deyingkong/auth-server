@@ -2,4 +2,4 @@
 echo "Current directory: "
 echo $PWD
 
-for pid in $(ps -ef | pgrep java | awk '/java/ && /auth-server.jar/ {print $2}'); do sudo kill -9 $pid; done
+for pid in $(pgrep -u root -a java| awk '/auth-server/ {print $1}'); do sudo kill -9 $pid; done
