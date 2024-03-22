@@ -18,16 +18,8 @@ import java.util.Arrays;
 @RestController
 public class DemoApplication {
 
-	@Autowired
-	private UserService userService;
 
-	@GetMapping("/test")
-	public Boolean test(){
-		boolean result = userService.isUserExist("austin");
-		return result;
-	}
-
-	@Bean
+/*	@Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 		return args -> {
 
@@ -42,7 +34,7 @@ public class DemoApplication {
 					log.info("bean name:{}, class:{}", beanName, object.getClass());
 			}
 		};
-	}
+	}*/
 
 
 	public static void main(String[] args) {
