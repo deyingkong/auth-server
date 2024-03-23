@@ -46,3 +46,5 @@ spring:
                                 - "openid"
                                 - "profile"
                         require-authorization-consent: false
+    devtools:
+        add-properties: false

@@ -122,6 +122,19 @@
 }
 
     </style>
+
+    <th:block th:if="${@environment.getActiveProfiles()[0] eq 'prod'}">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M582BVSXZ9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-M582BVSXZ9');
+    </script>
+    </th:block>
+
 </head>
 <body class="text-center">
 <div class="container text-center">
@@ -148,12 +161,12 @@
             </div>
 
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+            <button class="w-100 btn btn-lg btn-primary" type="submit" id="signInBtn">Sign in</button>
         </form>
     </main>
     <div class="row">
         <div class="col my-1">
-            <button class="gsi-material-button" onclick="location.href='/oauth2/authorization/google'" >
+            <button id="googleSignInBtn" class="gsi-material-button" onclick="location.href='/oauth2/authorization/google'" >
                 <div class="gsi-material-button-state"></div>
                 <div class="gsi-material-button-content-wrapper">
                     <div class="gsi-material-button-icon">
@@ -184,6 +197,22 @@
     <footer>
         <p class="mt-5 mb-3 text-muted">&copy; 2023–2024</p>
     </footer>
+
+    <th:block th:if="${@environment.getActiveProfiles()[0] eq 'prod'}">
+    <script>
+        $(document).on("click", "#signInBtn", function() {
+          gtag('event', 'login', {
+                'method': 'email_passwd'
+            });
+        });
+        $(document).on("click", "#googleSignInBtn", function() {
+          gtag('event', 'login', {
+                'method': 'google'
+            });
+        });
+    </script>
+    </th:block>
+
 </div>
 </body>
 </html>

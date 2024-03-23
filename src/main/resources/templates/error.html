@@ -8,6 +8,19 @@
 	<script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 	<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+
+	<th:block th:if="${@environment.getActiveProfiles()[0] eq 'prod'}">
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-M582BVSXZ9"></script>
+		<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-M582BVSXZ9');
+    </script>
+	</th:block>
+
 	<script>
 	function goBack() {
 	window.history.back();
