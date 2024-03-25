@@ -83,19 +83,11 @@ public class AccountController {
 
     private String getLoginErrorMessage(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            return null;
+        if (session != null && session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) instanceof AuthenticationException exception) {
+            log.error("", exception);
+            return exception.getMessage();
         }
-        if (!(session
-                .getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) instanceof AuthenticationException exception)) {
-            log.info("", session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION));
-            return "Invalid credentials";
-        }
-        if (!org.springframework.util.StringUtils.hasText(exception.getMessage())) {
-            return null;
-        }
-        return exception.getMessage();
+        return null;
     }
-
 
 }

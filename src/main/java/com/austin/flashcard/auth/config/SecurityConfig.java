@@ -116,13 +116,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/test").anonymous()
+                        authorize
                                 .requestMatchers("/signIn").anonymous()
                                 .requestMatchers("/signUp").anonymous()
                                 .requestMatchers("/signUpProcess").anonymous()
                                 .requestMatchers("/css/**").permitAll()
                                 .requestMatchers("/images/**").permitAll()
                                 .requestMatchers("/webjars/**").permitAll()
+                                .requestMatchers("/favicon.ico").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(v ->
