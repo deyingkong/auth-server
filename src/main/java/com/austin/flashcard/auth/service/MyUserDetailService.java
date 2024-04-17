@@ -54,6 +54,7 @@ public class MyUserDetailService implements UserDetailsManager, UserDetailsPassw
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
         if(Objects.isNull(user)){
+            log.warn("user {} cannot be found in db", username);
             return null;
         }
         boolean disabled = user.getStatus().intValue() < 1;

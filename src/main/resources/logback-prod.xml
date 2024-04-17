@@ -26,7 +26,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.springframework.security" level="TRACE"/>
+    <logger name="org.springframework.security" level="INFO"/>
 
     <root level="info">
         <appender-ref ref="FILE-ROLLING"/>

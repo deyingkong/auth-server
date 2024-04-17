@@ -24,11 +24,12 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             log.info("request details-> schema:{}, serverName:{}, serverPort:{}, requestURI:{}, queryString:{}, remoteAddr:{}, fullUrl:{}",
                     request.getScheme(), request.getServerName(), request.getServerPort(), request.getRequestURI(),
                     request.getQueryString(), request.getRemoteAddr(), UrlUtils.buildFullRequestUrl(request));
+
             var headerNames = request.getHeaderNames();
             if (headerNames != null) {
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
-                    log.info("Header:{} : {}", name, request.getHeader(name));
+                    log.debug("Header:{} : {}", name, request.getHeader(name));
                 }
             }
         }

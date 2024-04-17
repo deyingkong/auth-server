@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
+
+import static com.austin.flashcard.auth.constant.Common.ERROR_MSG_USER_NOT_EXIST;
+import static com.austin.flashcard.auth.constant.Common.ERROR_MSG_WRONG_PASSWORD;
 
 /**
  * @Description:
@@ -43,12 +47,17 @@ public class AccountController {
         if(!StringUtils.isEmpty(errorMsg)){
             model.addAttribute("error", errorMsg);
         }
+
         model.addAttribute(Common.PAGE_TITLE_KEY, "Sign-in");
         return "login";
     }
 
+
+
     @GetMapping("/signUp")
     public String openSignUpPage(Model model){
+        String sourceWebsite = getSourceWebsite(httpRequest);
+        log.info("redirectURL:{}", sourceWebsite);
         model.addAttribute(Common.PAGE_TITLE_KEY, "Sign-up");
         return "signup";
     }
@@ -58,14 +67,17 @@ public class AccountController {
                            @RequestParam(name = "username", required = true) String username,
                            @RequestParam(name = "password", required = true) String password,
                            Model model){
-        log.info("email:{},username:{},password:{}", email, username, password);
+        log.info("a new account is trying to register, email:{},username:{}", email, username);
         if(userService.isUserExist(email)){
             //throw new UserExistException(email);
-            model.addAttribute("error", "email address is already exist");
+            log.warn("The email address {} already exists", email);
+            model.addAttribute("error", "The email address already exists");
             return "signup";
         }
+        log.info("the new account was created, email:{},username:{}", email, username);
         userService.registerUser(email.trim(), username.trim(), password.trim());
-        return "redirect:/signIn";
+        model.addAttribute("success", "You have registered successfully. Please Sign in");
+        return "signup_success";
     }
 
     @GetMapping("/profile")
@@ -85,9 +97,28 @@ public class AccountController {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) instanceof AuthenticationException exception) {
             log.error("", exception);
-            return exception.getMessage();
+            String exMsg = exception.getMessage();
+            if(StringUtils.containsIgnoreCase(exMsg, "UserDetailsService returned null")){
+                exMsg = ERROR_MSG_USER_NOT_EXIST;
+            }
+            if(StringUtils.containsIgnoreCase(exMsg,"Bad credentials")){
+                exMsg = ERROR_MSG_WRONG_PASSWORD;
+            }
+            return exMsg;
         }
         return null;
+    }
+
+    private String getSourceWebsite(HttpServletRequest httpRequest) {
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null && session.getAttribute(Common.DEFAULT_SAVED_REQUEST_ATTR) != null){
+            DefaultSavedRequest request = (DefaultSavedRequest)session.getAttribute(Common.DEFAULT_SAVED_REQUEST_ATTR);
+            log.info("Saved Request:{}", request);
+            if(StringUtils.containsIgnoreCase(request.getRedirectUrl(), Common.OAUTH2_CLIENT_FLASHCARD)) {
+                return Common.OAUTH2_CLIENT_FLASHCARD;
+            }
+        }
+        return "";
     }
 
 }
